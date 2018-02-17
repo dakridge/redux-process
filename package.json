@@ -1,0 +1,30 @@
+{
+  "name": "redux-process",
+  "version": "1.0.0",
+  "description": "Redux middleware for handling requests",
+  "main": "dist/bundle.umd.js",
+  "jsnext:main": "dist/bundle.es.js",
+  "scripts": {
+    "build": "rm -rf dist/ && node_modules/.bin/rollup -c",
+    "prepublish": "npm run build",
+    "test": "",
+    "lint": "standard"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dakridge/redux-process"
+  },
+  "author": "dakridge",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.17.1"
+  },
+  "devDependencies": {
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "rollup": "^0.56.1",
+    "rollup-plugin-async": "^1.2.0",
+    "rollup-plugin-babel": "^3.0.3"
+  }
+}

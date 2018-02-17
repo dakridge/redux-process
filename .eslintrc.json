@@ -1,0 +1,53 @@
+{
+    "extends": "airbnb",
+    "parser": "babel-eslint",
+    "env": {
+        "browser": true
+    },
+
+    "settings": {
+        "import/resolver": {
+            "node": {
+                "moduleDirectory": ["node_modules", "assets/react", "assets/public"]
+            }
+        }
+    },
+
+    "plugins": [
+        "import",
+        "react",
+        "class-property"
+    ],
+
+    "rules": {
+
+        // import
+        "import/first": "off",
+        "import/no-unresolved": "off",
+
+        // style
+        "max-len": ["error", { "code": 800, "comments": 80 }],
+
+        // indentation
+        "indent": ["error", 4, { "SwitchCase": 1 }],
+        "no-tabs": "off",
+
+        // spacing
+        "padded-blocks": ["error", "never"],
+        "key-spacing": ["error", { "align": "colon" }],
+        "brace-style": ["error", "stroustrup", { "allowSingleLine": true }],
+        "object-curly-newline": ["error", { "consistent": true }],
+
+        // react
+        "react/jsx-indent": ["error", 4],
+        "class-property/rule-name": "always",
+        "react/jsx-filename-extension": ["error", { "extensions": [".js", ".jsx"] }],
+
+        // a11y
+        "jsx-a11y/label-has-for" : "off",
+        "jsx-a11y/click-events-have-key-events": "off",
+        "jsx-a11y/mouse-events-have-key-events": "offf",
+        "jsx-a11y/no-static-element-interactions": "off"
+
+    }
+}
