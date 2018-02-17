@@ -10,7 +10,7 @@ export default {
     plugins: [
         async(),
         babel({
-            exclude: 'node_modules/**'
+            exclude: 'node_modules/**',
         })
     ],
     external : ['axios']

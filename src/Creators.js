@@ -1,3 +1,6 @@
+// defaults
+import defaults from './defaults';
+
 // helpers
 const { hasOwnProperty } = Object.prototype;
 
@@ -27,7 +30,9 @@ const GenerateProcess = (processName, config) => {
         return createDispatch(processName, config);
     }
 
-    return null;
+    console.warn(`Process: '${processName}' does not exist.`);
+
+    return { type: '@@process/PROCESS_DNE', processName };
 };
 
 const CreateProcess = (config) => {
@@ -37,27 +42,31 @@ const CreateProcess = (config) => {
 
     const processName = config.name;
 
-    if (hasOwnProperty.call(StoredProcesses, processName)) {
-        //
-    }
+    const build = () => {
+        if (hasOwnProperty.call(StoredProcesses, processName)) {
+            return false; // process already exists
+        }
 
-    StoredProcesses[processName] = {};
-    StoredProcesses[processName].name = config.name;
-    StoredProcesses[processName].method = config.method;
-    StoredProcesses[processName].request = config.request;
-    StoredProcesses[processName].receive = config.receive;
-    StoredProcesses[processName].ermahgerd = config.ermahgerd;
+        StoredProcesses[processName] = {};
+        StoredProcesses[processName].name = config.name;
+        StoredProcesses[processName].method = config.method;
+        StoredProcesses[processName].request = config.request;
+        StoredProcesses[processName].receive = config.receive;
+        StoredProcesses[processName].ermahgerd = config.ermahgerd || defaults.error;
 
-    StoredProcesses[processName].types = {};
-    StoredProcesses[processName].types.base = config.type;
-    StoredProcesses[processName].types.init = `${config.type}@START`;
-    StoredProcesses[processName].types.success = `${config.type}@SUCCESS`;
-    StoredProcesses[processName].types.error = `${config.type}@ERROR`;
+        StoredProcesses[processName].types = {};
+        StoredProcesses[processName].types.base = config.type;
+        StoredProcesses[processName].types.init = `${config.type}@START`;
+        StoredProcesses[processName].types.error = `${config.type}@ERROR`;
+        StoredProcesses[processName].types.success = `${config.type}@SUCCESS`;
 
-    return {
-        processName,
-        __IsReduxProcess: true,
+        return {
+            processName,
+            __IsReduxProcess: true,
+        };
     };
+
+    return build;
 };
 
 export {
