@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { GetProcess } from './Creators';
 
-const ProcessMiddleware = processes => store => next => async (action) => {
+const ProcessMiddleware = processes => store => next => (action) => {
     const { type } = action;
 
     // build the processes
