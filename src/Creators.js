@@ -51,7 +51,7 @@ const CreateProcess = (config) => {
         StoredProcesses[processName].name = config.name;
         StoredProcesses[processName].method = config.method;
         StoredProcesses[processName].request = config.request;
-        StoredProcesses[processName].receive = config.receive;
+        StoredProcesses[processName].receive = config.receive || defaults.receive;
         StoredProcesses[processName].ermahgerd = config.ermahgerd || defaults.error;
 
         StoredProcesses[processName].types = {};
