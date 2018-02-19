@@ -9,6 +9,9 @@ axios = axios && axios.hasOwnProperty('default') ? axios['default'] : axios;
 var defaults = {
     error: function error(err) {
         return err.data;
+    },
+    receive: function receive(res) {
+        return res.data;
     }
 };
 
@@ -67,13 +70,14 @@ var CreateProcess = function CreateProcess(config) {
         StoredProcesses[processName].name = config.name;
         StoredProcesses[processName].method = config.method;
         StoredProcesses[processName].request = config.request;
-        StoredProcesses[processName].receive = config.receive;
+        StoredProcesses[processName].requiredProps = config.requiredProps || [];
+        StoredProcesses[processName].receive = config.receive || defaults.receive;
         StoredProcesses[processName].ermahgerd = config.ermahgerd || defaults.error;
 
         StoredProcesses[processName].types = {};
         StoredProcesses[processName].types.base = config.type;
         StoredProcesses[processName].types.init = config.type + '@START';
-        StoredProcesses[processName].types.error = config.type + '@ERROR';
+        StoredProcesses[processName].types.error = config.type + '@FAIL';
         StoredProcesses[processName].types.success = config.type + '@SUCCESS';
 
         return {
@@ -82,7 +86,10 @@ var CreateProcess = function CreateProcess(config) {
         };
     };
 
-    return build;
+    return {
+        build: build,
+        name: processName
+    };
 };
 
 var _extends = Object.assign || function (target) {
@@ -107,8 +114,8 @@ var ProcessMiddleware = function ProcessMiddleware(processes) {
 
                 // build the processes
 
-                processes.forEach(function (build) {
-                    build();
+                processes.forEach(function (process) {
+                    process.build();
                 });
 
                 if (type !== '@@process/RUN_PROCESS') {

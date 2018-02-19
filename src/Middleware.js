@@ -5,8 +5,8 @@ const ProcessMiddleware = processes => store => next => (action) => {
     const { type } = action;
 
     // build the processes
-    processes.forEach((build) => {
-        build();
+    processes.forEach((process) => {
+        process.build();
     });
 
     if (type !== '@@process/RUN_PROCESS') {

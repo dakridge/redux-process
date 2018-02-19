@@ -51,13 +51,14 @@ const CreateProcess = (config) => {
         StoredProcesses[processName].name = config.name;
         StoredProcesses[processName].method = config.method;
         StoredProcesses[processName].request = config.request;
+        StoredProcesses[processName].requiredProps = config.requiredProps || [];
         StoredProcesses[processName].receive = config.receive || defaults.receive;
         StoredProcesses[processName].ermahgerd = config.ermahgerd || defaults.error;
 
         StoredProcesses[processName].types = {};
         StoredProcesses[processName].types.base = config.type;
         StoredProcesses[processName].types.init = `${config.type}@START`;
-        StoredProcesses[processName].types.error = `${config.type}@ERROR`;
+        StoredProcesses[processName].types.error = `${config.type}@FAIL`;
         StoredProcesses[processName].types.success = `${config.type}@SUCCESS`;
 
         return {
@@ -66,7 +67,10 @@ const CreateProcess = (config) => {
         };
     };
 
-    return build;
+    return {
+        build,
+        name : processName
+    };
 };
 
 export {
