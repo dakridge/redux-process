@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 var defaults = {
     error: function error(err) {
         return err.data;
@@ -100,17 +98,18 @@ var _extends = Object.assign || function (target) {
   return target;
 };
 
-var ProcessMiddleware = function ProcessMiddleware(processes) {
+var ProcessMiddleware = function ProcessMiddleware(processes, request) {
+
+    // build the processes
+    processes.forEach(function (process) {
+        process.build();
+    });
+
     return function (store) {
         return function (next) {
             return function (action) {
                 var type = action.type;
 
-                // build the processes
-
-                processes.forEach(function (process) {
-                    process.build();
-                });
 
                 if (type !== '@@process/RUN_PROCESS') {
                     return next(action);
@@ -129,7 +128,7 @@ var ProcessMiddleware = function ProcessMiddleware(processes) {
                 // send the request action down the pipe
                 next(_extends({}, action, { type: process.types.init }));
 
-                return axios(requestStructure).then(function (res) {
+                return request(requestStructure).then(function (res) {
                     var response = {
                         succeeded: true,
                         data: res.data,
