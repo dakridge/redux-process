@@ -3,9 +3,12 @@ import { GetProcess } from './Creators';
 const ProcessMiddleware = (processes, request) => {
 
     // build the processes
+    console.group('Build Processes');
     processes.forEach((process) => {
         process.build();
+        console.log( `Building: ${process.name}` );
     });
+    console.groupEnd();
 
     return store => next => (action) => {
         const { type } = action;

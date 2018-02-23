@@ -101,9 +101,12 @@ var _extends = Object.assign || function (target) {
 var ProcessMiddleware = function ProcessMiddleware(processes, request) {
 
     // build the processes
+    console.group('Build Processes');
     processes.forEach(function (process) {
         process.build();
+        console.log('Building: ' + process.name);
     });
+    console.groupEnd();
 
     return function (store) {
         return function (next) {
