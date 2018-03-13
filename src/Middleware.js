@@ -1,14 +1,23 @@
 import { GetProcess } from './Creators';
 
-const ProcessMiddleware = (processes, request) => {
+const ProcessMiddleware = (processes, request, { logging = 0 }) => {
 
     // build the processes
-    console.group('Build Processes');
+    if ( logging >= 1 ) {
+        console.group('Build Processes');
+    }
+
     processes.forEach((process) => {
         process.build();
-        console.log( `Building: ${process.name}` );
+
+        if ( logging >= 1 ) {
+            console.log( `Building: ${process.name}` );
+        }
     });
-    console.groupEnd();
+
+    if ( logging >= 1 ) {
+        console.groupEnd();
+    }
 
     return store => next => (action) => {
         const { type } = action;
