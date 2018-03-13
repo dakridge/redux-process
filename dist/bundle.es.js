@@ -156,7 +156,7 @@ var ProcessMiddleware = function ProcessMiddleware(processes, request, options) 
                 var req = process.request(action.config);
 
                 var requestStructure = {
-                    url: baseURL + 'req.url',
+                    url: '' + baseURL + req.url,
                     method: process.method,
                     data: req.payload
                 };
