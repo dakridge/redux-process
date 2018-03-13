@@ -90,6 +90,27 @@ var CreateProcess = function CreateProcess(config) {
     };
 };
 
+var getNested = function getNested(obj, keyPath) {
+    var notSetValue = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : undefined;
+
+    var value = keyPath.reduce(function (xs, x) {
+        return xs && xs[x] ? xs[x] : notSetValue;
+    }, obj);
+    return value;
+};
+
+var defaultOptions = {
+    logging: 0,
+    baseURL: ''
+};
+
+var getOption = function getOption() {
+    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    var key = arguments[1];
+
+    return getNested(options, [key], defaultOptions[key]);
+};
+
 var _extends = Object.assign || function (target) {
   for (var i = 1; i < arguments.length; i++) {
     var source = arguments[i];
@@ -104,15 +125,27 @@ var _extends = Object.assign || function (target) {
   return target;
 };
 
-var ProcessMiddleware = function ProcessMiddleware(processes, request) {
+var ProcessMiddleware = function ProcessMiddleware(processes, request, options) {
+
+    var logging = getOption(options, 'logging');
+    var baseURL = getOption(options, 'baseURL');
 
     // build the processes
-    console.group('Build Processes');
+    if (logging >= 1) {
+        console.group('Build Processes');
+    }
+
     processes.forEach(function (process) {
         process.build();
-        console.log('Building: ' + process.name);
+
+        if (logging >= 1) {
+            console.log('Building: ' + process.name);
+        }
     });
-    console.groupEnd();
+
+    if (logging >= 1) {
+        console.groupEnd();
+    }
 
     return function (store) {
         return function (next) {
@@ -129,7 +162,7 @@ var ProcessMiddleware = function ProcessMiddleware(processes, request) {
                 var req = process.request(action.config);
 
                 var requestStructure = {
-                    url: req.url,
+                    url: baseURL + 'req.url',
                     method: process.method,
                     data: req.payload
                 };

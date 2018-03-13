@@ -1,6 +1,10 @@
+import { getOption } from './helpers';
 import { GetProcess } from './Creators';
 
-const ProcessMiddleware = (processes, request, { logging = 0 }) => {
+const ProcessMiddleware = (processes, request, options) => {
+
+    const logging = getOption(options, 'logging');
+    const baseURL = getOption(options, 'baseURL');
 
     // build the processes
     if ( logging >= 1 ) {
@@ -31,7 +35,7 @@ const ProcessMiddleware = (processes, request, { logging = 0 }) => {
         const req = process.request(action.config);
 
         const requestStructure = {
-            url   : req.url,
+            url   : `${baseURL}req.url`,
             method: process.method,
             data  : req.payload,
         };
