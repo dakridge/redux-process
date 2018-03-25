@@ -6,10 +6,10 @@
 
 var defaults = {
     error: function error(err) {
-        return err.data;
+        return err;
     },
     receive: function receive(res) {
-        return res.data;
+        return res;
     }
 };
 

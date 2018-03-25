@@ -1,4 +1,4 @@
 export default {
-    error  : err => err.data,
-    receive: res => res.data,
+    error  : err => err,
+    receive: res => res,
 };
