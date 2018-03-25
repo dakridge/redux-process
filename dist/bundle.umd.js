@@ -188,7 +188,7 @@ var ProcessMiddleware = function ProcessMiddleware(processes, request, options) 
                     };
 
                     var processedError = process.ermahgerd(response);
-                    next({ type: process.types.error, response: processedError });
+                    next(_extends({ type: process.types.error }, processedError));
                     return { succeeded: false, error: ermahgerd, data: processedError };
                 });
             };

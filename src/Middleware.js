@@ -63,7 +63,7 @@ const ProcessMiddleware = (processes, request, options) => {
                 };
 
                 const processedError = process.ermahgerd(response);
-                next({ type: process.types.error, response: processedError });
+                next({ type: process.types.error, ...processedError });
                 return { succeeded: false, error: ermahgerd, data: processedError };
             });
     }
