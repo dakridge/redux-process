@@ -17,7 +17,6 @@
   "author": "dakridge",
   "license": "MIT",
   "dependencies": {
-    "redux-process": "https://github.com/dakridge/redux-process.git"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
