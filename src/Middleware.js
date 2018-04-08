@@ -54,6 +54,7 @@ const ProcessMiddleware = (processes, request, options) => {
                     succeeded: true,
                     data     : res.data,
                     status   : res.status,
+                    request  : requestStructure
                 };
 
                 const processedResponse = process.success(response);
@@ -65,11 +66,12 @@ const ProcessMiddleware = (processes, request, options) => {
                     succeeded: false,
                     data     : ermahgerd.response.data,
                     status   : ermahgerd.response.status,
+                    request  : requestStructure
                 };
 
                 const processedError = process.error(response);
                 next({ type: process.types.error, ...processedError });
-                return { succeeded: false, error: ermahgerd, data: processedError };
+                return { ...processedError };
             });
     }
 };

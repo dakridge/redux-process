@@ -174,7 +174,8 @@ var ProcessMiddleware = function ProcessMiddleware(processes, request, options) 
                     var response = {
                         succeeded: true,
                         data: res.data,
-                        status: res.status
+                        status: res.status,
+                        request: requestStructure
                     };
 
                     var processedResponse = process.success(response);
@@ -184,12 +185,13 @@ var ProcessMiddleware = function ProcessMiddleware(processes, request, options) 
                     var response = {
                         succeeded: false,
                         data: ermahgerd.response.data,
-                        status: ermahgerd.response.status
+                        status: ermahgerd.response.status,
+                        request: requestStructure
                     };
 
                     var processedError = process.error(response);
                     next(_extends({ type: process.types.error }, processedError));
-                    return { succeeded: false, error: ermahgerd, data: processedError };
+                    return _extends({}, processedError);
                 });
             };
         };
