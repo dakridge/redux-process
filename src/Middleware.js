@@ -5,6 +5,8 @@ const ProcessMiddleware = (processes, request, options) => {
 
     const logging = getOption(options, 'logging');
     const baseURL = getOption(options, 'baseURL');
+    const defaultError = getOption(options, 'error');
+    const defaultSuccess = getOption(options, 'success');
 
     // build the processes
     if ( logging >= 1 ) {
@@ -12,7 +14,10 @@ const ProcessMiddleware = (processes, request, options) => {
     }
 
     processes.forEach((process) => {
-        process.build();
+        process.build({
+            error  : defaultError,
+            success: defaultSuccess,
+        });
 
         if ( logging >= 1 ) {
             console.log( `Building: ${process.name}` );
@@ -51,7 +56,7 @@ const ProcessMiddleware = (processes, request, options) => {
                     status   : res.status,
                 };
 
-                const processedResponse = process.receive(response);
+                const processedResponse = process.success(response);
                 next({ type: process.types.success, response: processedResponse });
                 return { succeeded: true, status: response.status, data: processedResponse };
             })
@@ -62,7 +67,7 @@ const ProcessMiddleware = (processes, request, options) => {
                     status   : ermahgerd.response.status,
                 };
 
-                const processedError = process.ermahgerd(response);
+                const processedError = process.error(response);
                 next({ type: process.types.error, ...processedError });
                 return { succeeded: false, error: ermahgerd, data: processedError };
             });

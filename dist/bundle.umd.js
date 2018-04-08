@@ -4,17 +4,6 @@
 	(factory((global['redux-process'] = {})));
 }(this, (function (exports) { 'use strict';
 
-var defaults = {
-    error: function error(err) {
-        return err;
-    },
-    receive: function receive(res) {
-        return res;
-    }
-};
-
-// defaults
-
 // helpers
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 
@@ -59,7 +48,7 @@ var CreateProcess = function CreateProcess(config) {
 
     var processName = config.name;
 
-    var build = function build() {
+    var build = function build(defaults) {
         if (hasOwnProperty.call(StoredProcesses, processName)) {
             return false; // process already exists
         }
@@ -69,8 +58,8 @@ var CreateProcess = function CreateProcess(config) {
         StoredProcesses[processName].method = config.method;
         StoredProcesses[processName].request = config.request;
         StoredProcesses[processName].requiredProps = config.requiredProps || [];
-        StoredProcesses[processName].receive = config.receive || defaults.receive;
-        StoredProcesses[processName].ermahgerd = config.ermahgerd || defaults.error;
+        StoredProcesses[processName].success = config.success || defaults.success;
+        StoredProcesses[processName].error = config.error || defaults.error;
 
         StoredProcesses[processName].types = {};
         StoredProcesses[processName].types.base = config.type;
@@ -101,7 +90,13 @@ var getNested = function getNested(obj, keyPath) {
 
 var defaultOptions = {
     logging: 0,
-    baseURL: ''
+    baseURL: '',
+    error: function error(err) {
+        return err;
+    },
+    success: function success(res) {
+        return res;
+    }
 };
 
 var getOption = function getOption() {
@@ -129,6 +124,8 @@ var ProcessMiddleware = function ProcessMiddleware(processes, request, options) 
 
     var logging = getOption(options, 'logging');
     var baseURL = getOption(options, 'baseURL');
+    var defaultError = getOption(options, 'error');
+    var defaultSuccess = getOption(options, 'success');
 
     // build the processes
     if (logging >= 1) {
@@ -136,7 +133,10 @@ var ProcessMiddleware = function ProcessMiddleware(processes, request, options) 
     }
 
     processes.forEach(function (process) {
-        process.build();
+        process.build({
+            error: defaultError,
+            success: defaultSuccess
+        });
 
         if (logging >= 1) {
             console.log('Building: ' + process.name);
@@ -177,7 +177,7 @@ var ProcessMiddleware = function ProcessMiddleware(processes, request, options) 
                         status: res.status
                     };
 
-                    var processedResponse = process.receive(response);
+                    var processedResponse = process.success(response);
                     next({ type: process.types.success, response: processedResponse });
                     return { succeeded: true, status: response.status, data: processedResponse };
                 }).catch(function (ermahgerd) {
@@ -187,7 +187,7 @@ var ProcessMiddleware = function ProcessMiddleware(processes, request, options) 
                         status: ermahgerd.response.status
                     };
 
-                    var processedError = process.ermahgerd(response);
+                    var processedError = process.error(response);
                     next(_extends({ type: process.types.error }, processedError));
                     return { succeeded: false, error: ermahgerd, data: processedError };
                 });

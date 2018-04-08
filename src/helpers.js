@@ -6,6 +6,8 @@ export const getNested = (obj, keyPath, notSetValue = undefined) => {
 const defaultOptions = {
     logging: 0,
     baseURL: '',
+    error  : err => err,
+    success: res => res,
 }
 
 export const getOption = (options = {}, key) => {

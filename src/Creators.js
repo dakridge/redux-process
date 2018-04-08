@@ -1,6 +1,3 @@
-// defaults
-import defaults from './defaults';
-
 // helpers
 const { hasOwnProperty } = Object.prototype;
 
@@ -42,7 +39,7 @@ const CreateProcess = (config) => {
 
     const processName = config.name;
 
-    const build = () => {
+    const build = (defaults) => {
         if (hasOwnProperty.call(StoredProcesses, processName)) {
             return false; // process already exists
         }
@@ -52,8 +49,8 @@ const CreateProcess = (config) => {
         StoredProcesses[processName].method = config.method;
         StoredProcesses[processName].request = config.request;
         StoredProcesses[processName].requiredProps = config.requiredProps || [];
-        StoredProcesses[processName].receive = config.receive || defaults.receive;
-        StoredProcesses[processName].ermahgerd = config.ermahgerd || defaults.error;
+        StoredProcesses[processName].success = config.success || defaults.success;
+        StoredProcesses[processName].error = config.error || defaults.error;
 
         StoredProcesses[processName].types = {};
         StoredProcesses[processName].types.base = config.type;
