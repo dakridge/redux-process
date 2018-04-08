@@ -174,7 +174,7 @@ var ProcessMiddleware = function ProcessMiddleware(processes, request, options) 
 
                     var processedResponse = process.success(response);
                     next({ type: process.types.success, response: processedResponse });
-                    return { succeeded: true, status: response.status, data: processedResponse };
+                    return _extends({}, processedResponse);
                 }).catch(function (ermahgerd) {
                     var response = {
                         succeeded: false,
