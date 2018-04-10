@@ -174,7 +174,7 @@ var ProcessMiddleware = function ProcessMiddleware(processes, request, options) 
 
                     var processedResponse = process.success(response);
                     next({ type: process.types.success, response: processedResponse });
-                    return _extends({}, processedResponse);
+                    return processedResponse;
                 }).catch(function (ermahgerd) {
                     var response = {
                         succeeded: false,
@@ -185,7 +185,7 @@ var ProcessMiddleware = function ProcessMiddleware(processes, request, options) 
 
                     var processedError = process.error(response);
                     next(_extends({ type: process.types.error }, processedError));
-                    return _extends({}, processedError);
+                    return processedError;
                 });
             };
         };
