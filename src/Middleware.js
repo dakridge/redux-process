@@ -59,7 +59,7 @@ const ProcessMiddleware = (processes, request, options) => {
 
                 const processedResponse = process.success(response);
                 next({ type: process.types.success, response: processedResponse });
-                return processedResponse;
+                return { succeeded: true, status: res.status, request: requestStructure, response: processedResponse };
             })
             .catch((ermahgerd) => {
                 const response = {
@@ -70,8 +70,8 @@ const ProcessMiddleware = (processes, request, options) => {
                 };
 
                 const processedError = process.error(response);
-                next({ type: process.types.error, ...processedError });
-                return processedError;
+                next({ type: process.types.error, response: processedError });
+                return { succeeded: false, status: response.status, request: requestStructure, response: processedError };
             });
     }
 };
