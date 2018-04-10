@@ -28,7 +28,7 @@ const ProcessMiddleware = (processes, request, options) => {
         console.groupEnd();
     }
 
-    return store => next => (O) => {
+    return store => next => (action) => {
         const { type } = action;
 
         if (type !== '@@process/RUN_PROCESS') {
