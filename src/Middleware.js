@@ -28,7 +28,7 @@ const ProcessMiddleware = (processes, request, options) => {
         console.groupEnd();
     }
 
-    return store => next => (action) => {
+    return store => next => (O) => {
         const { type } = action;
 
         if (type !== '@@process/RUN_PROCESS') {
@@ -58,8 +58,17 @@ const ProcessMiddleware = (processes, request, options) => {
                 };
 
                 const processedResponse = process.success(response);
-                next({ type: process.types.success, response: processedResponse });
-                return { succeeded: true, status: res.status, request: requestStructure, response: processedResponse };
+                
+                const actionPayload = {
+                    succeeded: true, 
+                    status   : res.status, 
+                    request  : requestStructure, 
+                    response : processedResponse,
+                    type     : process.types.success,
+                };
+                
+                next(actionPayload);
+                return actionPayload;
             })
             .catch((ermahgerd) => {
                 const response = {
@@ -70,8 +79,17 @@ const ProcessMiddleware = (processes, request, options) => {
                 };
 
                 const processedError = process.error(response);
-                next({ type: process.types.error, response: processedError });
-                return { succeeded: false, status: response.status, request: requestStructure, response: processedError };
+
+                const actionPayload = {
+                    succeeded: false, 
+                    response : processedError,
+                    status   : response.status, 
+                    request  : requestStructure, 
+                    type     : process.types.error,
+                };
+
+                next(actionPayload);
+                return actionPayload;
             });
     }
 };

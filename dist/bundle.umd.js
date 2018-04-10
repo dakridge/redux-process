@@ -149,8 +149,9 @@ var ProcessMiddleware = function ProcessMiddleware(processes, request, options) 
 
     return function (store) {
         return function (next) {
-            return function (action) {
-                var type = action.type;
+            return function (O) {
+                var _action = action,
+                    type = _action.type;
 
 
                 if (type !== '@@process/RUN_PROCESS') {
@@ -179,8 +180,17 @@ var ProcessMiddleware = function ProcessMiddleware(processes, request, options) 
                     };
 
                     var processedResponse = process.success(response);
-                    next({ type: process.types.success, response: processedResponse });
-                    return { succeeded: true, status: res.status, request: requestStructure, response: processedResponse };
+
+                    var actionPayload = {
+                        succeeded: true,
+                        status: res.status,
+                        request: requestStructure,
+                        response: processedResponse,
+                        type: process.types.success
+                    };
+
+                    next(actionPayload);
+                    return actionPayload;
                 }).catch(function (ermahgerd) {
                     var response = {
                         succeeded: false,
@@ -190,8 +200,17 @@ var ProcessMiddleware = function ProcessMiddleware(processes, request, options) 
                     };
 
                     var processedError = process.error(response);
-                    next({ type: process.types.error, response: processedError });
-                    return { succeeded: false, status: response.status, request: requestStructure, response: processedError };
+
+                    var actionPayload = {
+                        succeeded: false,
+                        response: processedError,
+                        status: response.status,
+                        request: requestStructure,
+                        type: process.types.error
+                    };
+
+                    next(actionPayload);
+                    return actionPayload;
                 });
             };
         };
