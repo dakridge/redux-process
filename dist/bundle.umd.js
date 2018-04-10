@@ -149,9 +149,8 @@ var ProcessMiddleware = function ProcessMiddleware(processes, request, options) 
 
     return function (store) {
         return function (next) {
-            return function (O) {
-                var _action = action,
-                    type = _action.type;
+            return function (action) {
+                var type = action.type;
 
 
                 if (type !== '@@process/RUN_PROCESS') {
