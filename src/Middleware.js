@@ -73,8 +73,8 @@ const ProcessMiddleware = (processes, request, options) => {
             .catch((ermahgerd) => {
                 const response = {
                     succeeded: false,
-                    data     : ermahgerd.response.data,
-                    status   : ermahgerd.response.status,
+                    data     : ermahgerd.response.data ? ermahgerd.response.data : {},
+                    status   : ermahgerd.response.status ? ermahgerd.response.status : 400,
                     request  : requestStructure
                 };
 
