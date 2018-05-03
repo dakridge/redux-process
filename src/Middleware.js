@@ -1,5 +1,5 @@
-import { getOption } from './helpers';
 import { GetProcess } from './Creators';
+import { getOption, getNested } from './helpers';
 
 const ProcessMiddleware = (processes, request, options) => {
 
@@ -73,8 +73,8 @@ const ProcessMiddleware = (processes, request, options) => {
             .catch((ermahgerd) => {
                 const response = {
                     succeeded: false,
-                    data     : ermahgerd.response.data ? ermahgerd.response.data : {},
-                    status   : ermahgerd.response.status ? ermahgerd.response.status : 400,
+                    data     : getNested(ermahgerd, ['response', 'data'], {}),
+                    status   : getNested(ermahgerd, ['response', 'status'], 400),
                     request  : requestStructure
                 };
 
