@@ -162,9 +162,10 @@ var ProcessMiddleware = function ProcessMiddleware(processes, request, options) 
                 var req = process.request(action.config);
 
                 var requestStructure = {
-                    url: '' + baseURL + req.url,
+                    data: req.payload,
+                    config: action.config,
                     method: process.method,
-                    data: req.payload
+                    url: '' + baseURL + req.url
                 };
 
                 // send the request action down the pipe
