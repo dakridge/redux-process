@@ -41,7 +41,7 @@ const ProcessMiddleware = (processes, request, options) => {
 
         const requestStructure = {
             data  : req.payload,
-            config: action.config,
+            props : action.config,
             method: process.method,
             url   : `${baseURL}${req.url}`,
         };
