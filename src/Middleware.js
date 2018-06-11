@@ -49,7 +49,7 @@ const ProcessMiddleware = (processes, request, options) => {
         // send the request action down the pipe
         next({ ...action, type: process.types.init });
 
-        return request(requestStructure)
+        return request(process, action)(requestStructure)
             .then((res) => {
                 const response = {
                     succeeded: true,

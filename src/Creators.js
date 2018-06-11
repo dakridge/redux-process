@@ -44,19 +44,30 @@ const CreateProcess = (config) => {
             return false; // process already exists
         }
 
-        StoredProcesses[processName] = {};
-        StoredProcesses[processName].name = config.name;
-        StoredProcesses[processName].method = config.method;
-        StoredProcesses[processName].request = config.request;
-        StoredProcesses[processName].requiredProps = config.requiredProps || [];
-        StoredProcesses[processName].success = config.success || defaults.success;
-        StoredProcesses[processName].error = config.error || defaults.error;
+        const {
+            name, 
+            type, 
+            error, 
+            method, 
+            request, 
+            success, 
+            requiredProps,
+            ...otherProps,
+        } = config;
+
+        StoredProcesses[processName] = { ...otherProps };
+        StoredProcesses[processName].name = name;
+        StoredProcesses[processName].method = method;
+        StoredProcesses[processName].request = request;
+        StoredProcesses[processName].requiredProps = requiredProps || [];
+        StoredProcesses[processName].success = success || defaults.success;
+        StoredProcesses[processName].error = error || defaults.error;
 
         StoredProcesses[processName].types = {};
-        StoredProcesses[processName].types.base = config.type;
-        StoredProcesses[processName].types.init = `${config.type}@START`;
-        StoredProcesses[processName].types.error = `${config.type}@FAIL`;
-        StoredProcesses[processName].types.success = `${config.type}@SUCCESS`;
+        StoredProcesses[processName].types.base = type;
+        StoredProcesses[processName].types.init = `${type}@START`;
+        StoredProcesses[processName].types.error = `${type}@FAIL`;
+        StoredProcesses[processName].types.success = `${type}@SUCCESS`;
 
         return {
             processName,

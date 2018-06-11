@@ -4,6 +4,32 @@
 	(factory((global['redux-process'] = {})));
 }(this, (function (exports) { 'use strict';
 
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];
+
+    for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }
+
+  return target;
+};
+
+var objectWithoutProperties = function (obj, keys) {
+  var target = {};
+
+  for (var i in obj) {
+    if (keys.indexOf(i) >= 0) continue;
+    if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
+    target[i] = obj[i];
+  }
+
+  return target;
+};
+
 // helpers
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 
@@ -48,24 +74,34 @@ var CreateProcess = function CreateProcess(config) {
 
     var processName = config.name;
 
-    var build = function build(defaults) {
+    var build = function build(defaults$$1) {
         if (hasOwnProperty.call(StoredProcesses, processName)) {
             return false; // process already exists
         }
 
-        StoredProcesses[processName] = {};
-        StoredProcesses[processName].name = config.name;
-        StoredProcesses[processName].method = config.method;
-        StoredProcesses[processName].request = config.request;
-        StoredProcesses[processName].requiredProps = config.requiredProps || [];
-        StoredProcesses[processName].success = config.success || defaults.success;
-        StoredProcesses[processName].error = config.error || defaults.error;
+        var name = config.name,
+            type = config.type,
+            error = config.error,
+            method = config.method,
+            request = config.request,
+            success = config.success,
+            requiredProps = config.requiredProps,
+            otherProps = objectWithoutProperties(config, ['name', 'type', 'error', 'method', 'request', 'success', 'requiredProps']);
+
+
+        StoredProcesses[processName] = _extends({}, otherProps);
+        StoredProcesses[processName].name = name;
+        StoredProcesses[processName].method = method;
+        StoredProcesses[processName].request = request;
+        StoredProcesses[processName].requiredProps = requiredProps || [];
+        StoredProcesses[processName].success = success || defaults$$1.success;
+        StoredProcesses[processName].error = error || defaults$$1.error;
 
         StoredProcesses[processName].types = {};
-        StoredProcesses[processName].types.base = config.type;
-        StoredProcesses[processName].types.init = config.type + '@START';
-        StoredProcesses[processName].types.error = config.type + '@FAIL';
-        StoredProcesses[processName].types.success = config.type + '@SUCCESS';
+        StoredProcesses[processName].types.base = type;
+        StoredProcesses[processName].types.init = type + '@START';
+        StoredProcesses[processName].types.error = type + '@FAIL';
+        StoredProcesses[processName].types.success = type + '@SUCCESS';
 
         return {
             processName: processName,
@@ -104,20 +140,6 @@ var getOption = function getOption() {
     var key = arguments[1];
 
     return getNested(options, [key], defaultOptions[key]);
-};
-
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];
-
-    for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
-      }
-    }
-  }
-
-  return target;
 };
 
 var ProcessMiddleware = function ProcessMiddleware(processes, request, options) {
@@ -171,7 +193,7 @@ var ProcessMiddleware = function ProcessMiddleware(processes, request, options) 
                 // send the request action down the pipe
                 next(_extends({}, action, { type: process.types.init }));
 
-                return request(requestStructure).then(function (res) {
+                return request(process, action)(requestStructure).then(function (res) {
                     var response = {
                         succeeded: true,
                         data: res.data,
