@@ -37,7 +37,7 @@ const ProcessMiddleware = (processes, request, options) => {
 
         // run our process down here
         const process = GetProcess(action.name);
-        const req = process.request(action.config);
+        const req = process.request(action.config, store);
 
         const requestStructure = {
             data  : req.payload,

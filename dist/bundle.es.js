@@ -175,7 +175,7 @@ var ProcessMiddleware = function ProcessMiddleware(processes, request, options) 
 
                 // run our process down here
                 var process = GetProcess(action.name);
-                var req = process.request(action.config);
+                var req = process.request(action.config, store);
 
                 var requestStructure = {
                     data: req.payload,
