@@ -218,7 +218,8 @@ var ProcessMiddleware = function ProcessMiddleware(processes, request, options) 
                         succeeded: false,
                         data: getNested(ermahgerd, ['response', 'data'], {}),
                         status: getNested(ermahgerd, ['response', 'status'], 400),
-                        request: requestStructure
+                        request: requestStructure,
+                        originalError: ermahgerd
                     };
 
                     var processedError = process.error(response);
