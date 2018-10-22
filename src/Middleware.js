@@ -73,10 +73,11 @@ const ProcessMiddleware = (processes, request, options) => {
             })
             .catch((ermahgerd) => {
                 const response = {
-                    succeeded: false,
-                    data     : getNested(ermahgerd, ['response', 'data'], {}),
-                    status   : getNested(ermahgerd, ['response', 'status'], 400),
-                    request  : requestStructure
+                    succeeded    : false,
+                    data         : getNested(ermahgerd, ['response', 'data'], {}),
+                    status       : getNested(ermahgerd, ['response', 'status'], 400),
+                    request      : requestStructure,
+                    originalError: ermahgerd,
                 };
 
                 const processedError = process.error(response);
