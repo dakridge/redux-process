@@ -43,7 +43,7 @@ const ProcessMiddleware = (processes, request, options) => {
             data  : req.payload,
             props : action.config,
             method: process.method,
-            url   : `${baseURL}${req.url}`,
+            url   : req.cancelBaseUrl ? `${req.url}` : `${baseURL}${req.url}`,
         };
 
         const typeLabels = {
