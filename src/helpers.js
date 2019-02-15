@@ -21,5 +21,5 @@ export const getLifecycleLabel = (name) => {
         success: 'SUCCESS',
     };
 
-    return lifecycles.name;
+    return lifecycles[name];
 }

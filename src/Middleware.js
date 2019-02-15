@@ -46,10 +46,12 @@ const ProcessMiddleware = (processes, request, options) => {
             url   : req.cancelBaseUrl ? `${req.url}` : `${baseURL}${req.url}`,
         };
 
+        var processConfig = action.config ? action.config : {};
+
         const typeLabels = {
-            init   : action.config.processTypeLabel ? `${action.config.processTypeLabel}@${getLifecycleLabel('start')}` : process.types.init,
-            error  : action.config.processTypeLabel ? `${action.config.processTypeLabel}@${getLifecycleLabel('fail')}` : process.types.error,
-            success: action.config.processTypeLabel ? `${action.config.processTypeLabel}@${getLifecycleLabel('success')}` : process.types.success,
+            init   : processConfig.processTypeLabel ? `${processConfig.processTypeLabel}@${getLifecycleLabel('start')}` : process.types.init,
+            error  : processConfig.processTypeLabel ? `${processConfig.processTypeLabel}@${getLifecycleLabel('fail')}` : process.types.error,
+            success: processConfig.processTypeLabel ? `${processConfig.processTypeLabel}@${getLifecycleLabel('success')}` : process.types.success,
         };
 
         // send the request action down the pipe

@@ -32,7 +32,7 @@ var getLifecycleLabel = function getLifecycleLabel(name) {
         success: 'SUCCESS'
     };
 
-    return lifecycles.name;
+    return lifecycles[name];
 };
 
 var _extends = Object.assign || function (target) {
@@ -194,10 +194,12 @@ var ProcessMiddleware = function ProcessMiddleware(processes, request, options) 
                     url: req.cancelBaseUrl ? '' + req.url : '' + baseURL + req.url
                 };
 
+                var processConfig = action.config ? action.config : {};
+
                 var typeLabels = {
-                    init: config.processTypeLabel ? config.processTypeLabel + '@' + getLifecycleLabel('start') : process.types.init,
-                    error: config.processTypeLabel ? config.processTypeLabel + '@' + getLifecycleLabel('fail') : process.types.error,
-                    success: config.processTypeLabel ? config.processTypeLabel + '@' + getLifecycleLabel('success') : process.types.success
+                    init: processConfig.processTypeLabel ? processConfig.processTypeLabel + '@' + getLifecycleLabel('start') : process.types.init,
+                    error: processConfig.processTypeLabel ? processConfig.processTypeLabel + '@' + getLifecycleLabel('fail') : process.types.error,
+                    success: processConfig.processTypeLabel ? processConfig.processTypeLabel + '@' + getLifecycleLabel('success') : process.types.success
                 };
 
                 // send the request action down the pipe
