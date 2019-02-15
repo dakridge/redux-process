@@ -13,3 +13,13 @@ const defaultOptions = {
 export const getOption = (options = {}, key) => {
     return getNested(options, [key], defaultOptions[key]);
 }
+
+export const getLifecycleLabel = (name) => {
+    const lifecycles = {
+        start  : 'START',
+        fail   : 'FAIL',
+        success: 'SUCCESS',
+    };
+
+    return lifecycles.name;
+}

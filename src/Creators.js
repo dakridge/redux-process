@@ -1,3 +1,5 @@
+import { getLifecycleLabel } from './helpers';
+
 // helpers
 const { hasOwnProperty } = Object.prototype;
 
@@ -65,9 +67,9 @@ const CreateProcess = (config) => {
 
         StoredProcesses[processName].types = {};
         StoredProcesses[processName].types.base = type;
-        StoredProcesses[processName].types.init = `${type}@START`;
-        StoredProcesses[processName].types.error = `${type}@FAIL`;
-        StoredProcesses[processName].types.success = `${type}@SUCCESS`;
+        StoredProcesses[processName].types.init = `${type}@${getLifecycleLabel('start')}`;
+        StoredProcesses[processName].types.error = `${type}@${getLifecycleLabel('fail')}`;
+        StoredProcesses[processName].types.success = `${type}@${getLifecycleLabel('success')}`;
 
         return {
             processName,

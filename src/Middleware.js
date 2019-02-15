@@ -1,5 +1,5 @@
 import { GetProcess } from './Creators';
-import { getOption, getNested } from './helpers';
+import { getOption, getNested, getLifecycleLabel } from './helpers';
 
 const ProcessMiddleware = (processes, request, options) => {
 
@@ -46,8 +46,14 @@ const ProcessMiddleware = (processes, request, options) => {
             url   : `${baseURL}${req.url}`,
         };
 
+        const typeLabels = {
+            init   : config.processTypeLabel ? `${config.processTypeLabel}@${getLifecycleLabel('start')}` : process.types.init,
+            error  : config.processTypeLabel ? `${config.processTypeLabel}@${getLifecycleLabel('fail')}` : process.types.error,
+            success: config.processTypeLabel ? `${config.processTypeLabel}@${getLifecycleLabel('success')}` : process.types.success,
+        };
+
         // send the request action down the pipe
-        next({ ...action, type: process.types.init });
+        next({ ...action, type: typeLabels.init });
 
         return request(process, action)(requestStructure)
             .then((res) => {
@@ -65,7 +71,7 @@ const ProcessMiddleware = (processes, request, options) => {
                     status   : res.status, 
                     request  : requestStructure, 
                     response : processedResponse,
-                    type     : process.types.success,
+                    type     : typeLabels.success,
                 };
                 
                 next(actionPayload);
@@ -87,7 +93,7 @@ const ProcessMiddleware = (processes, request, options) => {
                     response : processedError,
                     status   : response.status, 
                     request  : requestStructure, 
-                    type     : process.types.error,
+                    type     : typeLabels.error,
                 };
 
                 next(actionPayload);

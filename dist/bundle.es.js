@@ -1,3 +1,40 @@
+var getNested = function getNested(obj, keyPath) {
+    var notSetValue = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : undefined;
+
+    var value = keyPath.reduce(function (xs, x) {
+        return xs && xs[x] ? xs[x] : notSetValue;
+    }, obj);
+    return value;
+};
+
+var defaultOptions = {
+    logging: 0,
+    baseURL: '',
+    error: function error(err) {
+        return err;
+    },
+    success: function success(res) {
+        return res;
+    }
+};
+
+var getOption = function getOption() {
+    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    var key = arguments[1];
+
+    return getNested(options, [key], defaultOptions[key]);
+};
+
+var getLifecycleLabel = function getLifecycleLabel(name) {
+    var lifecycles = {
+        start: 'START',
+        fail: 'FAIL',
+        success: 'SUCCESS'
+    };
+
+    return lifecycles.name;
+};
+
 var _extends = Object.assign || function (target) {
   for (var i = 1; i < arguments.length; i++) {
     var source = arguments[i];
@@ -93,9 +130,9 @@ var CreateProcess = function CreateProcess(config) {
 
         StoredProcesses[processName].types = {};
         StoredProcesses[processName].types.base = type;
-        StoredProcesses[processName].types.init = type + '@START';
-        StoredProcesses[processName].types.error = type + '@FAIL';
-        StoredProcesses[processName].types.success = type + '@SUCCESS';
+        StoredProcesses[processName].types.init = type + '@' + getLifecycleLabel('start');
+        StoredProcesses[processName].types.error = type + '@' + getLifecycleLabel('fail');
+        StoredProcesses[processName].types.success = type + '@' + getLifecycleLabel('success');
 
         return {
             processName: processName,
@@ -107,33 +144,6 @@ var CreateProcess = function CreateProcess(config) {
         build: build,
         name: processName
     };
-};
-
-var getNested = function getNested(obj, keyPath) {
-    var notSetValue = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : undefined;
-
-    var value = keyPath.reduce(function (xs, x) {
-        return xs && xs[x] ? xs[x] : notSetValue;
-    }, obj);
-    return value;
-};
-
-var defaultOptions = {
-    logging: 0,
-    baseURL: '',
-    error: function error(err) {
-        return err;
-    },
-    success: function success(res) {
-        return res;
-    }
-};
-
-var getOption = function getOption() {
-    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-    var key = arguments[1];
-
-    return getNested(options, [key], defaultOptions[key]);
 };
 
 var ProcessMiddleware = function ProcessMiddleware(processes, request, options) {
@@ -184,8 +194,14 @@ var ProcessMiddleware = function ProcessMiddleware(processes, request, options) 
                     url: '' + baseURL + req.url
                 };
 
+                var typeLabels = {
+                    init: config.processTypeLabel ? config.processTypeLabel + '@' + getLifecycleLabel('start') : process.types.init,
+                    error: config.processTypeLabel ? config.processTypeLabel + '@' + getLifecycleLabel('fail') : process.types.error,
+                    success: config.processTypeLabel ? config.processTypeLabel + '@' + getLifecycleLabel('success') : process.types.success
+                };
+
                 // send the request action down the pipe
-                next(_extends({}, action, { type: process.types.init }));
+                next(_extends({}, action, { type: typeLabels.init }));
 
                 return request(process, action)(requestStructure).then(function (res) {
                     var response = {
@@ -202,7 +218,7 @@ var ProcessMiddleware = function ProcessMiddleware(processes, request, options) 
                         status: res.status,
                         request: requestStructure,
                         response: processedResponse,
-                        type: process.types.success
+                        type: typeLabels.success
                     };
 
                     next(actionPayload);
@@ -223,7 +239,7 @@ var ProcessMiddleware = function ProcessMiddleware(processes, request, options) 
                         response: processedError,
                         status: response.status,
                         request: requestStructure,
-                        type: process.types.error
+                        type: typeLabels.error
                     };
 
                     next(actionPayload);
