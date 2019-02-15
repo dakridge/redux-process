@@ -47,9 +47,9 @@ const ProcessMiddleware = (processes, request, options) => {
         };
 
         const typeLabels = {
-            init   : config.processTypeLabel ? `${config.processTypeLabel}@${getLifecycleLabel('start')}` : process.types.init,
-            error  : config.processTypeLabel ? `${config.processTypeLabel}@${getLifecycleLabel('fail')}` : process.types.error,
-            success: config.processTypeLabel ? `${config.processTypeLabel}@${getLifecycleLabel('success')}` : process.types.success,
+            init   : action.config.processTypeLabel ? `${action.config.processTypeLabel}@${getLifecycleLabel('start')}` : process.types.init,
+            error  : action.config.processTypeLabel ? `${action.config.processTypeLabel}@${getLifecycleLabel('fail')}` : process.types.error,
+            success: action.config.processTypeLabel ? `${action.config.processTypeLabel}@${getLifecycleLabel('success')}` : process.types.success,
         };
 
         // send the request action down the pipe
